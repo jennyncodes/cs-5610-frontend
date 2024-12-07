@@ -16,25 +16,25 @@ export default function QuizDisplayEditor() {
   console.log(quizzes);
   const [activeTab, setActiveTab] = useState("details");
   const [quiz, setQuiz] = useState({
-    _id:"",
-    course:"",
-      title: "Unnamed Quiz",
-      description: "",
-      assignedTo: "",
-      quiz_type: "",
-      points: "",
-      group: "",
-      shuffle_answers: "",
-      time_limit: "",
-      multiple_attempts: "",
-      show_answers: "",
-      access_code: "",
-      one_question: "",
-      webcam: "",
-      lock_questions: "",
-      dueDate: new Date().toISOString().slice(0, 16),
-      available: new Date().toISOString().slice(0, 16),
-      availableUntil: new Date().toISOString().slice(0, 16),
+    _id: "123",
+    course: "Course 1",
+    title: "Sample Quiz",
+    description: "Description",
+    assignedTo: "Instructor",
+    quiz_type: "Graded Quiz",
+    points: 50,
+    group: "Exams",
+    shuffle_answers: "Yes",
+    time_limit: "30",
+    multiple_attempts: true,
+    show_answers: "After completion",
+    access_code: "1234",
+    one_question: true,
+    webcam: false,
+    lock_questions: true,
+    dueDate: new Date().toISOString(),
+    available: new Date().toISOString(),
+    availableUntil: new Date().toISOString(),
   })
 
   useEffect(() => {
@@ -85,6 +85,8 @@ export default function QuizDisplayEditor() {
         
         <div className="mb-3">
           <div className="border p-3">
+          <label htmlFor="wd-points" className="col-sm-2 col-form-label">
+          Quiz Instructions</label>
           <textarea value={quiz.description} className="form-control mb-2" id="wd-description"
              onChange={(e) => setQuiz({ ...quiz, description: e.target.value })} />
 
@@ -93,7 +95,64 @@ export default function QuizDisplayEditor() {
               Points</label>
               <div className="col-sm-10">
                 <input value={quiz.points} id="wd-points" className="form-control mb-2"
-                  onChange={ (e) => setQuiz({ ...quiz, points: (e.target.value) })}/>
+                  onChange={ (e) => setQuiz({ ...quiz, points: parseInt(e.target.value) })}/>
+              </div>
+            </div>
+
+            
+          <div className="row mb-3">
+            <label htmlFor="wd-group" className="col-sm-2 col-form-label">Quiz Type</label>
+            <div className="col-sm-10">
+              <select onChange = {(e) => setQuiz({ ...quiz, quiz_type: e.target.value})}
+                className="form-select" id="wd-quiz-type" name="quiz-type">
+                <option selected>Graded Quiz</option>
+                <option value="1">Practice Quiz</option>
+                <option value="2">Graded Survey</option>
+                <option value="3">Ungraded Survey</option>
+              </select>
+            </div>
+        </div>
+        <div className="row mb-3">
+            <label htmlFor="wd-group" className="col-sm-2 col-form-label">Assignment Group</label>
+            <div className="col-sm-10">
+              <select onChange = {(e) => setQuiz({ ...quiz, group: e.target.value})}
+                className="form-select" id="wd-quiz-group" name="assignment-group">
+                <option value="Assignments">Assignments</option>
+                <option value="Quizzes">Quizzes</option>
+                <option value="Exams">Exams</option>
+                <option value="Project">Project</option>
+              </select>
+            </div>
+        </div>
+
+        <div className="row mb-3">
+          <label htmlFor="wd-submission-type" className="col-sm-2 col-form-label"></label>
+          <div className="col-sm-10">
+          
+            <label className="col-form-label">Options</label><br/>
+
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" name="check-genre" id="wd-text-entry"/>
+                <label className="form-check-label" htmlFor="wd-text-entry">Shuffle Answers</label><br />
+            </div>
+
+            <div className="form-check">
+                <input className="form-check-input" type="checkbox" name="check-genre" id="wd-website-url"/>
+                <label className="form-check-label" htmlFor="wd-website-url">Time Limit</label><br />
+              </div>
+
+
+              <div className="form-check">
+              <input value={quiz.time_limit} id="wd-points" className=""
+                  onChange={ (e) => setQuiz({ ...quiz, time_limit: (e.target.value) })}/>
+                <label className="form-check-label" htmlFor="wd-student-annotation">Minutes</label><br />
+                </div>
+
+                <div className="form-check">
+                <input className="form-check-input" type="checkbox" name="check-genre" id="wd-media-recordings"/>
+                <label className="form-check-label" htmlFor="wd-media-recordings">Allow Multiple Attempts</label><br />
+              </div>
+
               </div>
             </div>
 

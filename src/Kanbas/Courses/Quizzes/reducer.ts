@@ -9,7 +9,7 @@ const initialState = {
       description: "",
       assignedTo: "",
       quiz_type: "",
-      points: "100",
+      points: 0,
       group: "",
       shuffle_answers: "",
       time_limit: "",

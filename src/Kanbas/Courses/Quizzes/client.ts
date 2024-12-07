@@ -6,7 +6,7 @@ const QUIZZES_API = `${REMOTE_SERVER}/api/quizzes`;
 
 
 export const updateQuiz = async (quiz: any) => {
-    const { data } = await axiosWithCredentials.put(`${COURSES_API}/${quiz._id}`, quiz);
+    const { data } = await axiosWithCredentials.put(`${QUIZZES_API}/${quiz._id}`, quiz);
     return data;
 };
   
