@@ -3,6 +3,7 @@ import GreenCheckmark from "../Modules/GreenCheckmark";
 import { BsGripVertical } from "react-icons/bs";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { BsFillCaretDownFill } from "react-icons/bs";
+import { RxRocket } from "react-icons/rx";
 import { LuFileEdit } from "react-icons/lu";
 import { FaTrash } from "react-icons/fa";
 import { Link, useNavigate} from "react-router-dom";
@@ -16,18 +17,28 @@ export default function Quizzes() {
   const { cid } = useParams();
   const dispatch = useDispatch();
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
-  console.log(quizzes);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const newQuiz = ({
-	  _id: "",
-      title: "New Quiz", 
+    _id:"",
+	course:"",
+      title: "",
       description: "",
-      points: "100",
-      course: "RS101",
-      dueDate: "",
-      availableFrom: "",
-      availableUntil: "",
+      assignedTo: "",
+      quiz_type: "",
+      points: "",
+      group: "",
+      shuffle_answers: "",
+      time_limit: "",
+      multiple_attempts: "",
+      show_answers: "",
+      access_code: "",
+      one_question: "",
+      webcam: "",
+      lock_questions: "",
+      dueDate: new Date().toISOString().slice(0, 16),
+      available: new Date().toISOString().slice(0, 16),
+      availableUntil: new Date().toISOString().slice(0, 16),
 	});
 
   const fetchQuizzes = async () => {
@@ -36,9 +47,9 @@ export default function Quizzes() {
   };
   useEffect(() => {
     fetchQuizzes();
-  }, [cid]);
+  }, []);
 
-  console.log(quizzes);
+  console.log(cid);
 
     return (
        
@@ -47,12 +58,17 @@ export default function Quizzes() {
                placeholder="Search for Quiz" />
 
     {currentUser?.role === "FACULTY" && (
+        
 
         <Link to={`/Kanbas/Courses/${cid}/Quizzes/new`}>
+            <button type="submit" className="btn btn-sm btn btn-outline-dark float-end me-1 wd-kanbas-save-profile btn-default">
+            <IoEllipsisVertical className="fs-5 mt-1" />     
+        </button>
         <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger">
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           Quiz
         </button>
+        
         </Link>
     )}
           <br/><br/><br/>
@@ -64,31 +80,38 @@ export default function Quizzes() {
               <BsFillCaretDownFill />
               Assignment Quizzes
               </div>
+          
             </div>
             </li>
 
         <ul id="wd-quiz-list" className="list-group rounded-0">
-          {quizzes.map((quiz: any) => (
-          <li className="wd-quiz-list-item list-group-item p-3 ps-2 ">
-          <BsGripVertical className="me-2 fs-3" />
-          
-          <LuFileEdit className="me-2 fs-4 text-success" />
-          {currentUser?.role === "FACULTY" && (
-          <div className="float-end">
-            <FaTrash className="text-danger me-3 mt-1 fs-5" onClick={(e) =>{e.preventDefault();
-              const confirmDelete = window.confirm("Are you sure you want to delete this quiz?");
-              if(confirmDelete) {
-                dispatch(deleteQuiz(quiz._id));
-              }
+            {quizzes.map((quiz: any) => (
+            <li className="wd-quiz-list-item list-group-item p-3 ps-2 ">
+            <RxRocket className="me-1 fs-4" />
+            {currentUser?.role === "FACULTY" && (
+            <div className="float-end">
+                <FaTrash className="text-danger me-3 mt-1 fs-5" onClick={(e) =>{e.preventDefault();
+                const confirmDelete = window.confirm("Are you sure you want to delete this quiz?");
+                if(confirmDelete) {
+                    dispatch(deleteQuiz(quiz._id));
+                }
             }} /> 
             <GreenCheckmark />
-            <IoEllipsisVertical className="me-2 mt-1 fs-5" />     
+           
           </div>
           )}
         
             <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link text-decoration-none text-dark">
                   {quiz.title}
                 </Link>
+
+                <div className="quiz-details">
+                    {/* <p>Availability: {getAvailabilityText(quiz)}</p> */}
+                    <p>Due Date: {quiz.dueDate}</p>
+                    <p>Points: {quiz.points}</p>
+                    <p>Questions: {quiz.questions.length}</p>
+                    <p>Score: {quiz.score || "N/A"}</p>
+                  </div>
             
             <div className="mt-1">
               {/* {quiz.description} */}

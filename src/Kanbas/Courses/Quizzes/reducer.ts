@@ -3,14 +3,25 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     quizzes:<any>[],
     quiz: {
-      _id: "1",
-      title: "New Quiz", 
+      _id:"1",
+      course:"",
+      title: "",
       description: "",
+      assignedTo: "",
+      quiz_type: "",
       points: "100",
-      course: "RS101",
+      group: "",
+      shuffle_answers: "",
+      time_limit: "",
+      multiple_attempts: "",
+      show_answers: "",
+      access_code: "",
+      one_question: "",
+      webcam: "",
+      lock_questions: "",
       dueDate: new Date().toISOString().slice(0, 16),
-      availableFrom: new Date().toISOString().slice(0, 16),
-      availableUntil: new Date().toISOString().slice(0, 16)
+      available: new Date().toISOString().slice(0, 16),
+      availableUntil: new Date().toISOString().slice(0, 16),
   }
 };
 
