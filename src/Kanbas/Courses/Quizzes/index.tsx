@@ -16,10 +16,18 @@ export default function Quizzes() {
   const { cid } = useParams();
   const dispatch = useDispatch();
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
+  console.log(quizzes);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const newQuiz = ({
-	
+	  _id: "",
+      title: "New Quiz", 
+      description: "",
+      points: "100",
+      course: "RS101",
+      dueDate: "",
+      availableFrom: "",
+      availableUntil: "",
 	});
 
   const fetchQuizzes = async () => {
@@ -28,7 +36,9 @@ export default function Quizzes() {
   };
   useEffect(() => {
     fetchQuizzes();
-  }, []);
+  }, [cid]);
+
+  console.log(quizzes);
 
     return (
        
@@ -45,6 +55,17 @@ export default function Quizzes() {
         </button>
         </Link>
     )}
+          <br/><br/><br/>
+
+        <ul id="wd-quizzes" className="list-group rounded-0">
+          <li className="wd-quizzes-title list-group-item p-0 fs-5 border-gray">
+            <div className="wd-title p-3 ps-2 bg-secondary">   
+              <div className="dropdown d-inline me-1 float-left">
+              <BsFillCaretDownFill />
+              Assignment Quizzes
+              </div>
+            </div>
+            </li>
 
         <ul id="wd-quiz-list" className="list-group rounded-0">
           {quizzes.map((quiz: any) => (
@@ -64,19 +85,11 @@ export default function Quizzes() {
             <IoEllipsisVertical className="me-2 mt-1 fs-5" />     
           </div>
           )}
-          {currentUser?.role === "STUDENT" && (
-              <Link to={`/Kanbas/Courses/${cid}/Quizzes/`} 
-              className="wd-quiz-link text-decoration-none text-dark">
-              {quiz.title}
-            </Link>
-          )}
-            {currentUser?.role === "FACULTY" && (
-            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`} 
-              className="wd-quiz-link text-decoration-none text-dark"
-             >
-              {quiz.title}
-            </Link>
-            )}
+        
+            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link text-decoration-none text-dark">
+                  {quiz.title}
+                </Link>
+            
             <div className="mt-1">
               {/* {quiz.description} */}
               <span className="text-danger me-1">Multiple Modules</span> | <span className="me-1"> Not available until {quiz.availableUntil} at 12:00am</span> |
@@ -88,6 +101,7 @@ export default function Quizzes() {
           </li>
             ))}
           </ul>
+        </ul>
         
  
       </div>

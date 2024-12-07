@@ -4,7 +4,7 @@ const initialState = {
     quizzes:<any>[],
     quiz: {
       _id: "1",
-      title: "New Assignment", 
+      title: "New Quiz", 
       description: "",
       points: "100",
       course: "RS101",
