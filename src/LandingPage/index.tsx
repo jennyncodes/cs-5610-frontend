@@ -13,7 +13,6 @@ export default function LandingPage() {
       <TOC />
       <Routes>
         <Route path="/" element={<Navigate to="LandingPage" />} />
-        <Route path="/LandingPage" element={<LandingPage />} />
       </Routes>
     </div>
 
