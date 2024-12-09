@@ -5,7 +5,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { BsFillCaretDownFill } from "react-icons/bs";
 import { RxRocket } from "react-icons/rx";
 import { LuFileEdit } from "react-icons/lu";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaBan } from "react-icons/fa";
 import { Link, useNavigate} from "react-router-dom";
 import { useParams } from "react-router";
 import * as coursesClient from "../client";
@@ -16,8 +16,10 @@ import { addQuiz, setQuiz, deleteQuiz, setQuizzes, updateQuiz } from "./reducer"
 export default function Quizzes() {
   const { cid } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [publishQuiz, setPublishedQuiz] = useState([]);
 
   const newQuiz = ({
     _id: "123",
@@ -37,19 +39,52 @@ export default function Quizzes() {
     webcam: false,
     lock_questions: true,
     dueDate: new Date().toISOString(),
+    availability: "",
     available: new Date().toISOString(),
     availableUntil: new Date().toISOString(),
+    status: "unpublished",
 	});
 
   const fetchQuizzes = async () => {
     const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
+      setPublishedQuiz(quizzes);
       dispatch(setQuizzes(quizzes));
   };
+
+  const getAvailabilityStatus = (quiz: any) => {
+    const now = new Date();
+    const availableDate = new Date(quiz.available);
+    const availableUntil = new Date(quiz.availableUntil);
+
+    if (now < availableDate) return `Not available until ${quiz.available}`;
+    if (now > availableUntil) return "Closed";
+    return "Available";
+  };
+
+  // const togglePublish = (quizId: string) => {
+  //   const updatedQuiz = quizzes.find((quiz: any) => quiz._id === quizId);
+  //   updatedQuiz.published = !updatedQuiz.published;
+  //   dispatch(updateQuiz(updatedQuiz));
+  // };
+
+  const togglePublish = (quizId: string) => {
+    // Toggle publish/unpublish state for the quiz
+    const updatedQuiz = quizzes.map((quiz: any) =>
+      quiz._id === quizId ? { ...quiz, status: quiz.status === "unpublished" ? "published" : "unpublished" } : quiz
+    );
+    setPublishedQuiz(updatedQuiz);
+    // Optionally, update the quiz on the backend as well
+  };
+
+  const handleAddQuiz = () => {
+    dispatch(addQuiz(newQuiz));
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${newQuiz._id}`);
+  };
+
   useEffect(() => {
     fetchQuizzes();
   }, []);
 
-  console.log(cid);
 
     return (
        
@@ -62,9 +97,10 @@ export default function Quizzes() {
 
         <Link to={`/Kanbas/Courses/${cid}/Quizzes/new`}>
             <button type="submit" className="btn btn-sm btn btn-outline-dark float-end me-1 wd-kanbas-save-profile btn-default">
-            <IoEllipsisVertical className="fs-5 mt-1" />     
+            <IoEllipsisVertical className="fs-5 mt-1"
+            data-bs-toggle="dropdown" aria-expanded="false" />     
         </button>
-        <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger">
+        <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger" onClick={handleAddQuiz}>
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           Quiz
         </button>
@@ -83,47 +119,87 @@ export default function Quizzes() {
           
             </div>
             </li>
+              {quizzes.length === 0 ? (
+            <div className="text-center text-muted">
+              No quizzes yet. Click <b>+ Quiz</b> to create your first quiz!
+            </div>
+          ) : (
 
         <ul id="wd-quiz-list" className="list-group rounded-0">
             {quizzes.map((quiz: any) => (
             <li className="wd-quiz-list-item list-group-item p-3 ps-2 ">
-            <RxRocket className="me-1 fs-4" />
+         
             {currentUser?.role === "FACULTY" && (
             <div className="float-end">
-                <FaTrash className="text-danger me-3 mt-1 fs-5" onClick={(e) =>{e.preventDefault();
-                const confirmDelete = window.confirm("Are you sure you want to delete this quiz?");
-                if(confirmDelete) {
-                    dispatch(deleteQuiz(quiz._id));
-                }
-            }} /> 
-            <GreenCheckmark />
+            
+            {quiz.published ? (
+                      <GreenCheckmark />
+                    ) : (
+                      <span
+                        onClick={() => togglePublish(quiz._id)}
+                        style={{ cursor: "pointer", color: "red" }}
+                      >
+                        <FaBan />
+                      </span>
+                    )}
+                      <IoEllipsisVertical
+                      className="fs-5 me-2 dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    />
+                    <ul className="dropdown-menu">
+                      <li>
+                        <Link
+                          className="dropdown-item"
+                          to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`}
+                        >
+                          Edit
+                        </Link>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item text-danger"
+                          onClick={() => dispatch(deleteQuiz(quiz._id))}
+                        >
+                          Delete
+                        </button>
+                      </li>
+                      <li>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => togglePublish(quiz._id)}
+                        >
+                          {quiz.published ? "Unpublish" : "Publish"}
+                        </button>
+                      </li>
+                    </ul>
+
            
           </div>
           )}
-        
+          <div className="title-quizzes d-flex align-items-center">
+            <RxRocket className="me-1 mt-1 fs-4" />
             <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link text-decoration-none text-dark">
-                  {quiz.title}
+                  <h4>{quiz.title}</h4>
                 </Link>
-
-                <div className="quiz-details">
-                    {/* <p>Availability: {getAvailabilityText(quiz)}</p> */}
-                    <p>Due Date: {quiz.dueDate}</p>
-                    <p>Points: {quiz.points}</p>
-                    <p>Questions: {quiz.questions.length}</p>
-                    <p>Score: {quiz.score || "N/A"}</p>
+                </div>
+                <div className="quiz-details mt-1 me-1">
+                    <span><b>{getAvailabilityStatus(quiz)}</b></span> | 
+                    <span> Due Date: {quiz.dueDate}</span> | 
+                    <span> {quiz.points} pts</span> |
+                    <span> {quiz.questions?.length || 0 } Questions</span>
+                    {currentUser?.role === "STUDENT" && (
+                    <>
+                      | <span>Score: {quiz.score || "N/A"}</span>
+                    </>
+                  )}
                   </div>
-            
-            <div className="mt-1">
-              {/* {quiz.description} */}
-              <span className="text-danger me-1">Multiple Modules</span> | <span className="me-1"> Not available until {quiz.availableUntil} at 12:00am</span> |
-              <span className="me-1"> Due {quiz.dueDate} at 11:59pm</span> | <span className="me-1"> {quiz.points} points</span>
-            </div>
 
-            {/* <LessonControlButtons/>  */}
            
           </li>
             ))}
           </ul>
+          )}
         </ul>
         
  
