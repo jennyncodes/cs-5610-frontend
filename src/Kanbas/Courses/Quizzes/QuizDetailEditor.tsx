@@ -60,22 +60,31 @@ export default function QuizDisplayEditor() {
       }
       navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     };
+
+    
+  const handleDetailsButton = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
+  };
+
+  const handleQuestionButton = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/QuizQuestion`);
+  };
+
  
 
     return (
 
       <div id="wd-assignments-editor">
         <div className="tabs">
-        <button
+        <button type="submit" 
           className={activeTab === "details" ? "active" : ""}
-          onClick={() => setActiveTab("details")}>
+          onClick={handleDetailsButton}>
           Details
         </button>
-        <button
-          className={activeTab === "questions" ? "active" : ""}
-          onClick={() => setActiveTab("questions")}>
-          Questions
-        </button>
+        <button type="submit" 
+         className={activeTab === "questions" ? "active" : ""}
+        onClick={handleQuestionButton}>Questions</button>
+        
       </div>
 
     <form>
