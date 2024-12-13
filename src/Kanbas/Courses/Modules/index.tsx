@@ -44,19 +44,11 @@ export default function Modules() {
   };
 
 
-
-
   return (
     <div>
       {isFaculty && (
    
    <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={createModuleForCourse} />
-
-      // <ModulesControls moduleName={moduleName} setModuleName={setModuleName}
-      //   addModule={() => {
-      //     dispatch(addModule({ name: moduleName, course: cid }));
-      //     setModuleName("");
-      //   }} />
      
       )}
         <br/><br/><br/>

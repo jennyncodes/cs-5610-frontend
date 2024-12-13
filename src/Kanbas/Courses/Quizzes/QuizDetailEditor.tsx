@@ -63,11 +63,11 @@ export default function QuizDisplayEditor() {
 
     
   const handleDetailsButton = () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/QuizDetails`);
   };
 
   const handleQuestionButton = () => {
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/QuizQuestion`);
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Questions`);
   };
 
  
@@ -177,7 +177,7 @@ export default function QuizDisplayEditor() {
                     <label htmlFor="wd-due-date" className="col-sm-2 col-form-label">Due </label>
                     <div className="input-group mb-3">
                     <input onChange = {(e) => setQuiz({ ...quiz, dueDate: e.target.value})} 
-                    type="date" id="wd-due-date" value="May 13, 2024, 11:59 PM" className="form-control"/><br/>
+                    type="date" id="wd-due-date" value={quiz.dueDate} className="form-control"/><br/>
                     </div>
 
                     
@@ -186,7 +186,7 @@ export default function QuizDisplayEditor() {
                         <label htmlFor="wd-available-from" className="col-sm-3 col-form-label">Available from </label>
                         <div className="input-group mb-3">
                         <input onChange = {(e) => setQuiz({ ...quiz, available: e.target.value})}
-                          type="date" id="wd-available-from" value="2024-5-06"  className="form-control mb-2"/>
+                          type="date" id="wd-available-from" value={quiz.available}   className="form-control mb-2"/>
                         </div>
                         </div>
                         <div className="col-md-6">

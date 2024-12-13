@@ -12,8 +12,9 @@ import * as coursesClient from "../client";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import { addQuiz, setQuiz, deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
+import TrueFalseEditor from "./TrueFalseEditor";
 
-export default function QuizQuestion() {
+export default function Questions() {
   const { cid, qid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -23,14 +24,17 @@ export default function QuizQuestion() {
 
     return (
        
-    <div id="wd-questions-quizzes">
-        <Link to={`/Kanbas/Courses/${cid}/Assignments/${qid}/Questions/new`}>
+    <div className="wd-questions-quizzes">
+        <Link to={`/Kanbas/Courses/${cid}/Assignments/${qid}/QuizQuestion/new`}>
         <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
-          >
+        >
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           New Question
         </button>
         </Link>
+
+        <TrueFalseEditor/>
+        <h1>Hello</h1>
       
 
  

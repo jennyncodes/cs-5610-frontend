@@ -31,12 +31,12 @@ const questionsSlice = createSlice({
         (question: any) => question._id !== questionId
       );
     },
-    editQuestion: (state, {payload: newQuestion}) => {
+    updateQuestion: (state, {payload: newQuestion}) => {
       state.questions = state.questions.map((question:any) => 
         newQuestion._id === question._id ? newQuestion : question
       ) as any;
   },
-    selectQuestion: (state, { payload: questionId}) => {
+    setQuestion: (state, { payload: questionId}) => {
       state.question = state.questions.map((a: any) =>
         a._id === questionId ? { ...a, editing: true } : a
       ) as any;
@@ -45,6 +45,6 @@ const questionsSlice = createSlice({
   },
 });
 export const { addQuestion, deleteQuestion, 
-  editQuestion, selectQuestion, setQuestions} =
+  updateQuestion, setQuestion, setQuestions} =
   questionsSlice.actions;
 export default questionsSlice.reducer;
