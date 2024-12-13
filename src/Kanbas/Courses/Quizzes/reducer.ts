@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    quizzes:<any>[],
+    quizzes: <any>[],
     quiz: {
       _id:"1",
       course:"",
@@ -23,6 +23,7 @@ const initialState = {
       availability: "",
       available: new Date().toISOString().slice(0, 16),
       availableUntil: new Date().toISOString().slice(0, 16),
+      published: false,
   }
 };
 
@@ -31,34 +32,30 @@ const quizzesSlice = createSlice({
   initialState,
   reducers: {
     setQuizzes: (state, action) => {
-			state.quizzes = action.payload;
-		},
-    addQuiz: (state, {payload: quiz}) => {
-      const newQuiz: any = {
-        _id: new Date().getTime().toString(),
-        ...quiz,
-      };
-      state.quizzes = [...state.quizzes, newQuiz] as any;
-		},
-    deleteQuiz: (state, {payload: quizId}) => {
-      state.quizzes = state.quizzes.filter(
-        (quiz: any) => quiz._id !== quizId
-      );
+        state.quizzes = action.payload;
     },
-    updateQuiz: (state, {payload: newQuiz}) => {
-      state.quizzes = state.quizzes.map((quiz:any) => 
-        newQuiz._id === quiz._id ? newQuiz : quiz
-      ) as any;
-  },
-    setQuiz: (state, { payload: quizId}) => {
-      state.quiz = state.quizzes.map((q: any) =>
-        q._id === quizId ? { ...q, editing: true } : q
-      ) as any;
-  },
-    
+    addQuiz: (state, { payload: quiz }) => {
+        const newQuiz: any = {
+            _id: new Date().getTime().toString(),
+            ...quiz,
+        };
+        state.quizzes = [...state.quizzes, newQuiz] as any;
+    },
+    deleteQuiz: (state, { payload: quizId }) => {
+        state.quizzes = state.quizzes.filter(
+            (quiz: any) => quiz._id !== quizId
+        );
+    },
+    updateQuiz: (state, { payload: newQuiz }) => {
+        state.quizzes = state.quizzes.map((quiz: any) => 
+            newQuiz._id === quiz._id ? newQuiz : quiz
+        ) as any;
+    },
+    setQuiz: (state, { payload: quizId }) => {
+        state.quiz = state.quizzes.find((q: any) => q._id === quizId) || state.quiz;
+    },
   },
 });
-export const { addQuiz, deleteQuiz, 
-  updateQuiz, setQuiz, setQuizzes} =
-  quizzesSlice.actions;
+
+export const { addQuiz, deleteQuiz, updateQuiz, setQuiz, setQuizzes } = quizzesSlice.actions;
 export default quizzesSlice.reducer;
