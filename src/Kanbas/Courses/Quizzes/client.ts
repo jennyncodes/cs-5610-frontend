@@ -3,6 +3,7 @@ const axiosWithCredentials = axios.create({ withCredentials: true });
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 const QUIZZES_API = `${REMOTE_SERVER}/api/quizzes`;
+const QUESTIONS_API =`${REMOTE_SERVER}/api/questions`;
 
 
 export const updateQuiz = async (quiz: any) => {
@@ -19,3 +20,19 @@ export const findQuestionsForQuiz = async (quizId: string) => {
     const response = await axiosWithCredentials.get(`${QUIZZES_API}/${quizId}/questions`);
     return response.data;
   };
+
+export const createQuestionForQuiz = async (
+    quizId: string,
+    question: any
+  ) => {
+    const response = await axiosWithCredentials.post(
+      `${QUIZZES_API}/${quizId}/questions/${question._id}`,
+      question
+    );
+    return response.data;
+  };
+  
+  export const updateQuestion = async (question: any) => {
+    const { data } = await axiosWithCredentials.put(`${QUESTIONS_API}/${question._id}`, question);
+    return data;
+};

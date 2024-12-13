@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 import axios from "axios";
 
 const REMOTE_SERVER = process.env.REACT_APP_REMOTE_SERVER || "http://localhost:4000"; 
 const QUIZZES_API = `${REMOTE_SERVER}/api/quizzes`;
 
 export default function QuizDetails() {
-  const { quizId } = useParams(); 
+  const navigate = useNavigate();
+  const {cid, quizId } = useParams(); 
   const [quizDetails, setQuizDetails] = useState<any>({
     title: "Loading Quiz...",
     quizType: "N/A",
@@ -92,8 +94,21 @@ export default function QuizDetails() {
     );
   }
 
+  const handlePreviewButton = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizDetails/QuizPreview`);
+  };
+  const handleEditButton = () => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/QuizDetails`);
+  };
+
   return (
     <div className="container my-4">
+
+    <div className="d-flex justify-content-center">
+        <button onClick={handlePreviewButton} className="btn btn-secondary mx-2">Preview</button>
+        <button onClick={handleEditButton}className="btn btn-primary">Edit</button>
+      </div>
+      <br/>
       <h2>{quizDetails.title}</h2>
       {error && (
         <div className="alert alert-warning" role="alert">
@@ -164,10 +179,7 @@ export default function QuizDetails() {
           </tr>
         </tbody>
       </table>
-      <div className="d-flex justify-content-end">
-        <button className="btn btn-secondary mx-2">Preview</button>
-        <button className="btn btn-primary">Edit</button>
-      </div>
+     
     </div>
   );
 }

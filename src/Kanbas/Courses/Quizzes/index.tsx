@@ -19,7 +19,7 @@ export default function Quizzes() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const newQuiz = {
-    _id: "123",
+    _id: "",
     course: "",
     title: "Sample Quiz",
     description: "Description",

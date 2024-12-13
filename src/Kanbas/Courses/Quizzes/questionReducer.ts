@@ -4,6 +4,7 @@ const initialState = {
     questions:<any>[],
     question: {
       _id: "1",
+      type: "",
       title: "New question", 
       points: "",
       question_text: "",

@@ -12,11 +12,11 @@ import * as coursesClient from "../client";
 import * as quizClient from "./client";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { addQuestion, updateQuestion, deleteQuestion, setQuestions } from "./questionReducer";
+import { addQuestion, updateQuestion, deleteQuestion, setQuestion, setQuestions } from "./questionReducer";
 import TrueFalseEditor from "./TrueFalseEditor";
 
 export default function Questions() {
-  const { cid, qid } = useParams();
+  const { cid, qid, quid } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { questions } = useSelector((state: any) => state.questionReducer);
@@ -31,12 +31,6 @@ export default function Questions() {
     answer: "",
     correct_answer:"",
   };
-
-  const handleAddQuestion = () => {
-    dispatch(addQuestion(newQuestion));
-    navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid}/Questions/${newQuestion._id}`);
-  };
-
 
   const fetchQuestions = async () => {
     const questions = await coursesClient.findQuestionsForQuiz(cid as string, qid as string);
@@ -69,68 +63,62 @@ export default function Questions() {
         
       </div>
 
-      <div id="wd-assignments">
-  
+      <div id="wd-questions">
+
          {currentUser?.role ==="FACULTY" && (
-          
-        <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
-          onClick={handleAddQuestion}>
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-          New Question
-        </button>
+              <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/Questions/new`}>
+              <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
+                >
+              <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+               New Question
+              </button>
+              </Link>
 
         )
         } 
-       
-     
-
+  
           <br/><br/><br/>
 
           <ul id="wd-questions" className="list-group rounded-0">
-        
-        
+          {questions.length === 0 ? (
+            <div className="text-center text-muted">
+              No questions yet. Click <b>+ New Question</b> to create your first question!
+            </div>
+          ) : (
+      
           <ul id="wd-question-list" className="list-group rounded-0">
           {questions.map((question: any) => (
-          <li key ={question._id} className="wd-question-list-item list-group-item p-3 ps-2 ">
-          <BsGripVertical className="me-2 fs-3" />
-          
-          <LuFileEdit className="me-2 fs-4 text-success" />
-          {currentUser?.role === "FACULTY" && (
-          <div className="float-end">
-            <FaTrash className="text-danger me-3 mt-1 fs-5" onClick={(e) =>{e.preventDefault();
-              const confirmDelete = window.confirm("Are you sure you want to delete this assignment?");
-              if(confirmDelete) {
-                dispatch(deleteQuestion(question._id));
-              }
-            }} /> 
-            <GreenCheckmark />
-            <IoEllipsisVertical className="me-2 mt-1 fs-5" />     
-          </div>
-          )}
-       
-              <Link to={`/Kanbas/Courses/${cid}/Quizzes/`} 
-              className="wd-assignment-link text-decoration-none text-dark">
-              {question.title}
-            </Link>
-    
-   
-            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${question._id}`} 
-              className="wd-assignment-link text-decoration-none text-dark"
-             >
-              {question.title}
-            </Link>
+            
+            <li key ={question._id} className="wd-question-list-item list-group-item p-3 ps-2 ">
+              <div className="title-questions d-flex align-items-center">
 
-            <div className="mt-1">
-     
-              <span className="text-danger me-1">Multiple Modules</span> | <span className="me-1"> Not available until {question.availableUntil} at 12:00am</span> |
-              <span className="me-1"> Due {question.dueDate} at 11:59pm</span> | <span className="me-1"> {question.points} points</span>
+                  <Link to={`/Kanbas/Courses/${cid}/Quizzes/${qid}/Questions/${question._id}`} className="wd-quiz-link text-decoration-none text-dark">
+                    <h4>{question.title}</h4>
+                  </Link>
+                </div>
+                <p>{question.question_text}</p>
+
+                <div className="question-details mt-1 me-1">
+                
+                <span> {question.type} Question</span> |
+                <span> {question.points} pts</span> 
+                </div>
+        
+            {currentUser?.role === "FACULTY" && (
+            <div className="float-end">
+              <FaTrash className="text-danger me-3 mt-1 fs-5" onClick={(e) =>{e.preventDefault();
+                const confirmDelete = window.confirm("Are you sure you want to delete this question?");
+                if(confirmDelete) {
+                  dispatch(deleteQuestion(question._id));
+                }
+              }} /> 
             </div>
-           
+            )}
+    
           </li>
             ))}
           </ul>
-        
-
+          )}
          </ul>
  
       </div>

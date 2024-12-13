@@ -16,7 +16,7 @@ export default function QuizDisplayEditor() {
   console.log(quizzes);
   const [activeTab, setActiveTab] = useState("details");
   const [quiz, setQuiz] = useState({
-    _id: "123",
+    _id: "",
     course: "Course 1",
     title: "Sample Quiz",
     description: "Description",
@@ -35,6 +35,7 @@ export default function QuizDisplayEditor() {
     dueDate: new Date().toISOString(),
     available: new Date().toISOString(),
     availableUntil: new Date().toISOString(),
+    
   })
 
   useEffect(() => {
@@ -74,7 +75,7 @@ export default function QuizDisplayEditor() {
 
     return (
 
-      <div id="wd-assignments-editor">
+      <div id="wd-detail-editor">
         <div className="tabs">
         <button type="submit" 
           className={activeTab === "details" ? "active" : ""}
@@ -113,18 +114,18 @@ export default function QuizDisplayEditor() {
             <label htmlFor="wd-group" className="col-sm-2 col-form-label">Quiz Type</label>
             <div className="col-sm-10">
               <select onChange = {(e) => setQuiz({ ...quiz, quiz_type: e.target.value})}
-                className="form-select" id="wd-quiz-type" name="quiz-type">
-                <option selected>Graded Quiz</option>
-                <option value="1">Practice Quiz</option>
-                <option value="2">Graded Survey</option>
-                <option value="3">Ungraded Survey</option>
+                className="form-select" id="wd-quiz-type" name="quiz-type" defaultValue={quiz.quiz_type}>
+                <option value="Graded Quiz">Graded Quiz</option>
+                <option value="Practice Quiz">Practice Quiz</option>
+                <option value="Graded Survey">Graded Survey</option>
+                <option value="Ungraded Survey">Ungraded Survey</option>
               </select>
             </div>
         </div>
         <div className="row mb-3">
             <label htmlFor="wd-group" className="col-sm-2 col-form-label">Assignment Group</label>
             <div className="col-sm-10">
-              <select onChange = {(e) => setQuiz({ ...quiz, group: e.target.value})}
+              <select defaultValue={quiz.group} onChange = {(e) => setQuiz({ ...quiz, group: e.target.value})}
                 className="form-select" id="wd-quiz-group" name="assignment-group">
                   <option value="Quizzes">Quizzes</option>
                 <option value="Assignments">Assignments</option>
@@ -141,7 +142,8 @@ export default function QuizDisplayEditor() {
             <label className="col-form-label">Options</label><br/>
 
             <div className="form-check">
-                <input className="form-check-input" type="checkbox" name="check-genre" id="wd-text-entry"/>
+                <input className="form-check-input" type="checkbox" name="check-genre" id="wd-text-entry" 
+                onChange = {(e) => setQuiz({ ...quiz, shuffle_answers: e.target.value})}/>
                 <label className="form-check-label" htmlFor="wd-text-entry">Shuffle Answers</label><br />
             </div>
 
@@ -158,7 +160,8 @@ export default function QuizDisplayEditor() {
                 </div>
 
                 <div className="form-check">
-                <input className="form-check-input" type="checkbox" name="check-genre" id="wd-media-recordings"/>
+                <input className="form-check-input" type="checkbox" name="check-genre" id="wd-media-recordings"
+               />
                 <label className="form-check-label" htmlFor="wd-media-recordings">Allow Multiple Attempts</label><br />
               </div>
 

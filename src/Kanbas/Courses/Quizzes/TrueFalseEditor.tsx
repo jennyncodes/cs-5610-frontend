@@ -39,6 +39,12 @@ export default function TrueFalseEditor() {
         dispatch(updateQuestion(question));
       }
 
+      // const handleRadioButtonChange = (value: string) => {
+      //   setSelectedAnswer(value);
+      //   dispatch(setQuestion({ ...question, answer: [value] }));
+      // };
+    
+
     return (
         <div className="true-false-editor border rounded p-3 mb-2">
         <div className="d-flex justify-content-between align-items-center mb-2">
@@ -65,6 +71,9 @@ export default function TrueFalseEditor() {
                   setQuestion({ ...question, points: parseInt(e.target.value, 3)})
                 }
               />
+
+              <p> Enter your question text, then select True or False based on the correct
+              answer.</p>
         
           <input
             type="text"
