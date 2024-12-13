@@ -119,6 +119,7 @@ export default function Quizzes() {
           
             </div>
             </li>
+            
               {quizzes.length === 0 ? (
             <div className="text-center text-muted">
               No quizzes yet. Click <b>+ Quiz</b> to create your first quiz!
@@ -129,7 +130,7 @@ export default function Quizzes() {
             {quizzes.map((quiz: any) => (
             <li className="wd-quiz-list-item list-group-item p-3 ps-2 ">
          
-            {currentUser?.role === "FACULTY" && (
+          {currentUser?.role === "FACULTY" && (
             <div className="float-end">
             
             {quiz.published ? (

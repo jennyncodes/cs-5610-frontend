@@ -126,8 +126,8 @@ export default function QuizDisplayEditor() {
             <div className="col-sm-10">
               <select onChange = {(e) => setQuiz({ ...quiz, group: e.target.value})}
                 className="form-select" id="wd-quiz-group" name="assignment-group">
+                  <option value="Quizzes">Quizzes</option>
                 <option value="Assignments">Assignments</option>
-                <option value="Quizzes">Quizzes</option>
                 <option value="Exams">Exams</option>
                 <option value="Project">Project</option>
               </select>
