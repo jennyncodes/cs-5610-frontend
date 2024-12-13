@@ -20,6 +20,7 @@ const initialState = {
       webcam: "",
       lock_questions: "",
       dueDate: new Date().toISOString().slice(0, 16),
+      availability: "",
       available: new Date().toISOString().slice(0, 16),
       availableUntil: new Date().toISOString().slice(0, 16),
   }

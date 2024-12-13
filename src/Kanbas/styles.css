@@ -38,13 +38,16 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
   }
 
   .wd-assignment-list-item{
-    border-left: 3px solid green !important;
+    border-left: 4px solid green !important;
   }
   
   .wd-assignment-descrpition{
     color:red;
   }
   
+  .wd-quiz-list-item{
+    border-left: 4px solid green !important;
+  }
 
    
 
