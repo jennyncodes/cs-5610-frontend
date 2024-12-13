@@ -1,17 +1,15 @@
 import { FaPlus } from "react-icons/fa6";
 import GreenCheckmark from "../Modules/GreenCheckmark";
-import { BsGripVertical } from "react-icons/bs";
-import { IoEllipsisVertical } from "react-icons/io5";
 import { BsFillCaretDownFill } from "react-icons/bs";
+import { IoEllipsisVertical } from "react-icons/io5";
 import { RxRocket } from "react-icons/rx";
-import { LuFileEdit } from "react-icons/lu";
-import { FaTrash, FaBan } from "react-icons/fa";
-import { Link, useNavigate} from "react-router-dom";
+import { FaBan } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router";
 import * as coursesClient from "../client";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-import { addQuiz, setQuiz, deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
+import { addQuiz, deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
 
 export default function Quizzes() {
   const { cid } = useParams();
@@ -19,9 +17,8 @@ export default function Quizzes() {
   const navigate = useNavigate();
   const { quizzes } = useSelector((state: any) => state.quizzesReducer);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const [publishQuiz, setPublishedQuiz] = useState([]);
 
-  const newQuiz = ({
+  const newQuiz = {
     _id: "123",
     course: "",
     title: "Sample Quiz",
@@ -42,13 +39,16 @@ export default function Quizzes() {
     availability: "",
     available: new Date().toISOString(),
     availableUntil: new Date().toISOString(),
-    status: "unpublished",
-	});
+    published: false,
+  };
 
   const fetchQuizzes = async () => {
-    const quizzes = await coursesClient.findQuizzesForCourse(cid as string);
-      setPublishedQuiz(quizzes);
-      dispatch(setQuizzes(quizzes));
+    try {
+      const fetchedQuizzes = await coursesClient.findQuizzesForCourse(cid as string);
+      dispatch(setQuizzes(fetchedQuizzes));
+    } catch (error) {
+      console.error("Failed to fetch quizzes:", error);
+    }
   };
 
   const getAvailabilityStatus = (quiz: any) => {
@@ -61,19 +61,19 @@ export default function Quizzes() {
     return "Available";
   };
 
-  // const togglePublish = (quizId: string) => {
-  //   const updatedQuiz = quizzes.find((quiz: any) => quiz._id === quizId);
-  //   updatedQuiz.published = !updatedQuiz.published;
-  //   dispatch(updateQuiz(updatedQuiz));
-  // };
+  const togglePublish = async (quizId: string) => {
+    const quizToToggle = quizzes.find((quiz: any) => quiz._id === quizId);
+    if (!quizToToggle) return;
 
-  const togglePublish = (quizId: string) => {
-    // Toggle publish/unpublish state for the quiz
-    const updatedQuiz = quizzes.map((quiz: any) =>
-      quiz._id === quizId ? { ...quiz, status: quiz.status === "unpublished" ? "published" : "unpublished" } : quiz
-    );
-    setPublishedQuiz(updatedQuiz);
-    // Optionally, update the quiz on the backend as well
+    const updatedStatus = !quizToToggle.published;
+
+    try {
+      // Make API call to update the backend
+      const updatedQuiz = await coursesClient.updateQuizPublishStatus(quizId, updatedStatus);
+      dispatch(updateQuiz(updatedQuiz)); // Update Redux state with the updated quiz
+    } catch (error) {
+      console.error("Failed to update publish status:", error);
+    }
   };
 
   const handleAddQuiz = () => {
@@ -83,40 +83,46 @@ export default function Quizzes() {
 
   useEffect(() => {
     fetchQuizzes();
-  }, []);
+    // Optionally, add `cid` as a dependency if it can change
+  }, [cid]);
 
+  return (
+    <div id="wd-quizzes">
+      <input
+        id="wd-search-quizzes"
+        className="form-control w-25 float-start"
+        placeholder="Search for Quiz"
+      />
 
-    return (
-       
-      <div id="wd-quizzes">
-       <input id="wd-search-quizzes" className="form-control w-25 float-start"
-               placeholder="Search for Quiz" />
+      {currentUser?.role === "FACULTY" && (
+        <div>
+          <Link to={`/Kanbas/Courses/${cid}/Quizzes/new`}>
+            <button
+              type="button"
+              className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
+              onClick={handleAddQuiz}
+            >
+              <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+              Quiz
+            </button>
+          </Link>
+          <button
+            type="button"
+            className="btn btn-sm btn btn-outline-dark float-end me-1 wd-kanbas-save-profile btn-default"
+          >
+            <IoEllipsisVertical className="fs-5 mt-1" data-bs-toggle="dropdown" aria-expanded="false" />
+          </button>
+        </div>
+      )}
+      <br /><br /><br />
 
-    {currentUser?.role === "FACULTY" && (
-        
-
-        <Link to={`/Kanbas/Courses/${cid}/Quizzes/new`}>
-            <button type="submit" className="btn btn-sm btn btn-outline-dark float-end me-1 wd-kanbas-save-profile btn-default">
-            <IoEllipsisVertical className="fs-5 mt-1"
-            data-bs-toggle="dropdown" aria-expanded="false" />     
-        </button>
-        <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger" onClick={handleAddQuiz}>
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-          Quiz
-        </button>
-        
-        </Link>
-    )}
-          <br/><br/><br/>
-
-        <ul id="wd-quizzes" className="list-group rounded-0">
-          <li className="wd-quizzes-title list-group-item p-0 fs-5 border-gray">
-            <div className="wd-title p-3 ps-2 bg-secondary">   
-              <div className="dropdown d-inline me-1 float-left">
+      <ul id="wd-quizzes" className="list-group rounded-0">
+        <li className="wd-quizzes-title list-group-item p-0 fs-5 border-gray">
+          <div className="wd-title p-3 ps-2 bg-secondary">
+            <div className="dropdown d-inline me-1 float-left">
               <BsFillCaretDownFill />
               Assignment Quizzes
-              </div>
-          
+            </div>
             </div>
             </li>
             
@@ -143,7 +149,7 @@ export default function Quizzes() {
                         <FaBan />
                       </span>
                     )}
-                      <IoEllipsisVertical
+                    <IoEllipsisVertical
                       className="fs-5 me-2 dropdown-toggle"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
@@ -174,36 +180,30 @@ export default function Quizzes() {
                         </button>
                       </li>
                     </ul>
-
-           
-          </div>
-          )}
-          <div className="title-quizzes d-flex align-items-center">
-            <RxRocket className="me-1 mt-1 fs-4" />
-            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link text-decoration-none text-dark">
-                  <h4>{quiz.title}</h4>
-                </Link>
+                  </div>
+                )}
+                <div className="title-quizzes d-flex align-items-center">
+                  <RxRocket className="me-1 mt-1 fs-4" />
+                  <Link to={`/Kanbas/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link text-decoration-none text-dark">
+                    <h4>{quiz.title}</h4>
+                  </Link>
                 </div>
                 <div className="quiz-details mt-1 me-1">
-                    <span><b>{getAvailabilityStatus(quiz)}</b></span> | 
-                    <span> Due Date: {quiz.dueDate}</span> | 
-                    <span> {quiz.points} pts</span> |
-                    <span> {quiz.questions?.length || 0 } Questions</span>
-                    {currentUser?.role === "STUDENT" && (
+                  <span><b>{getAvailabilityStatus(quiz)}</b></span> | 
+                  <span> Due Date: {new Date(quiz.dueDate).toLocaleDateString()}</span> | 
+                  <span> {quiz.points} pts</span> |
+                  <span> {quiz.questions?.length || 0} Questions</span>
+                  {currentUser?.role === "STUDENT" && (
                     <>
                       | <span>Score: {quiz.score || "N/A"}</span>
                     </>
                   )}
-                  </div>
-
-           
-          </li>
+                </div>
+              </li>
             ))}
           </ul>
-          )}
-        </ul>
-        
- 
-      </div>
-  );}
-  
+        )}
+      </ul>
+    </div>
+  );
+}

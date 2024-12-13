@@ -24,7 +24,7 @@ export default function Questions() {
   const [activeTab, setActiveTab] = useState("questions");
 
   const newQuestion = {
-    _id: "1",
+    _id: "",
     question: "",
     type: "MC",
     points: 3,
@@ -39,7 +39,7 @@ export default function Questions() {
 
 
   const fetchQuestions = async () => {
-    const questions = await quizClient.findQuestionsForQuiz(qid as string);
+    const questions = await coursesClient.findQuestionsForQuiz(cid as string, qid as string);
       dispatch(setQuestions(questions));
   };
 
@@ -71,15 +71,16 @@ export default function Questions() {
 
       <div id="wd-assignments">
   
-        {currentUser?.role ==="FACULTY" && (
+         {currentUser?.role ==="FACULTY" && (
           
         <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
           onClick={handleAddQuestion}>
         <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
           New Question
         </button>
- 
-        )}
+
+        )
+        } 
        
      
 
@@ -107,13 +108,13 @@ export default function Questions() {
           </div>
           )}
        
-              <Link to={`/Kanbas/Courses/${cid}/Assignments/`} 
+              <Link to={`/Kanbas/Courses/${cid}/Quizzes/`} 
               className="wd-assignment-link text-decoration-none text-dark">
               {question.title}
             </Link>
     
    
-            <Link to={`/Kanbas/Courses/${cid}/Assignments/${question._id}`} 
+            <Link to={`/Kanbas/Courses/${cid}/Quizzes/${question._id}`} 
               className="wd-assignment-link text-decoration-none text-dark"
              >
               {question.title}
@@ -135,7 +136,7 @@ export default function Questions() {
       </div>
 
 
-       
+{/*        
     <div className="wd-questions-quizzes">
         <Link to={`/Kanbas/Courses/${cid}/Assignments/${qid}/QuizQuestion/QuizQuestionsEditor`}>
         <button type="submit" className="btn btn-md btn-danger float-end me-1 wd-kanbas-save-profile btn-danger"
@@ -146,7 +147,7 @@ export default function Questions() {
         </Link>
     
  
-    </div>
+    </div> */}
     </div>
   );}
   
